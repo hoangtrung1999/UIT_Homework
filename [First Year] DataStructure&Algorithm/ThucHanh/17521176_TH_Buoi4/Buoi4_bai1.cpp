@@ -132,19 +132,17 @@ void DeleteTail (List &L)
 {
 	Node *p = new Node;
 	Node *q = new Node;
-	Node *r = new Node;
 	if (p == NULL || q == NULL)
 		return;
 	p = L.pHead;
 	q = p->pNext;
-	r = q->pNext;
 	do
 	{	
 		p = p->pNext;
 		q = p->pNext;
-		r = q->pNext;
-	} while(r!= NULL);
+	} while( q->pNext != NULL);
 	p->pNext = NULL;
+	delete L.pTail;
 	L.pTail = p;
 }
 
@@ -173,18 +171,18 @@ void DeleteNode (List &L)
 			Node *p = new Node;
 			Node *q = new Node;
 			p = L.pHead;
-			do
+			do // Tìm node p
 			{
 				if (p->info == x)
 					break;
 				p = p->pNext;
 			}while (p != NULL);
 
-			if (p->info == L.pTail->info)
+			if (p->info == L.pTail->info) // Phần tử cần tìm là node đầu
 				DeleteTail(L);
-			else if (p->info == L.pHead->info)
+			else if (p->info == L.pHead->info) // Phần tử cần tìm là node cuối
 				DeleteHead(L);
-			else
+			else // Đẩy phần tử sau p lên phía trước, sau đó xóa phần tử cuối
 			{
 				q = p->pNext;
 				do
