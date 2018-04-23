@@ -3,18 +3,18 @@
 
 using namespace std;
 
-struct node
+struct Node
 {
 	int info;
-	struct node *pNext;
-	struct node *pPrev;
+	struct Node *pNext;
+	struct Node *pPrev;
 };
 
 
 struct List
 {
-	node *pHEAD;
-	node *pTail;
+	Node *pHEAD;
+	Node *pTail;
 };
 //typedef struct List List;
 
@@ -24,9 +24,9 @@ void Init(List &l)
 	l.pTail = NULL;
 }
 
-node* GetNode(int x)
+Node* GetNode(int x)
 {
-	node *p = new node;
+	Node *p = new Node;
 	if (p == NULL)
 		return NULL;
 	p->info = x;
@@ -35,7 +35,7 @@ node* GetNode(int x)
 	return p;
 }
 
-void ADDHEAD(List &l, node *p)
+void ADDHEAD(List &l, Node *p)
 {
 	if (l.pHEAD == NULL)
 		l.pHEAD = l.pTail = p;
@@ -50,8 +50,9 @@ void ADDHEAD(List &l, node *p)
 void Input (List &L)
 {
 	cout<<"Input"<<endl;
+	cout<<"Enter -1 to finish input"<<endl;
 	Init(L);
-	node *p = new node;
+	Node *p = new Node;
 	if (p == NULL)
 		return;
 	int data;
@@ -66,7 +67,7 @@ void Input (List &L)
 
 void Output(List l)
 {
-	node *p = l.pHEAD;
+	Node *p = l.pHEAD;
 	while (p != NULL)
 	{
 		cout << p->info << " ";
@@ -75,51 +76,50 @@ void Output(List l)
 	cout << endl;
 }
 
-void DeleteNode (List &l, node *q)
+void DeleteNode (List &l , Node *p)
 {
-	cout<<"Deleting"<<endl;
-	if ( q == l.pTail)
+	if (p == l.pTail)
 	{
-		l.pTail = q->pPrev;
+		l.pTail = p->pPrev;
 		l.pTail->pNext = NULL;
-		delete q;
-		return;
+		p->pPrev = NULL;
+		// NULL <- p -> NULL
+		delete p;
 	}
 	else
 	{
-		(q->pPrev)->pNext = q->pNext;
-		(q->pNext)->pPrev = q->pPrev;
-		q->pNext = NULL;
-		q->pPrev = NULL;
-		delete q;
-		return;
+		(p->pPrev)->pNext = p->pNext;
+		(p->pNext)->pPrev = p->pPrev;
+		p->pPrev = NULL;
+		p->pNext = NULL;
+		delete p;
 	}
 }
 
-void DeleteDuplicate (List &l)
+Node* GetDuplicate (List l , Node* p)
 {
-	node *p = new node;
-	node *q = new node;
-	node *t = new node;
-	for (p = l.pHEAD; p->pNext != l.pTail ; p = p->pNext)
-		for (q = p->pNext; q != NULL ; )
+	Node* Index = new Node;
+	for (Index = p->pNext ; Index != NULL ; Index = Index->pNext)
+		if (Index->info == p->info)
+			return Index;
+	return NULL;
+}	
+
+void DeleteDuplicate(List &l)
+{
+	Node *p = new Node;
+	Node *q = new Node;
+	for ( p = l.pHEAD ; p != NULL ;)
+	{
+		q = GetDuplicate(l,p);
+		if ( q != NULL)
 		{
-			cout<<p->info<<" "<<q->info<<endl;
-			if (q->info == p->info)
-				{
-					if (q == l.pTail)
-						DeleteNode(l,q);
-					else
-					{
-						t = q->pNext;
-						DeleteNode (l,q);
-						q = t;
-					}
-					Output(l);
-				}
-			else
-				q = q->pNext;		
-		}		
+			DeleteNode(l,q);
+			p = l.pHEAD;
+		}
+		else
+			p = p->pNext;
+	}
 }
 
 int main()
