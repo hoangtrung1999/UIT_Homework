@@ -116,26 +116,44 @@ void PrintList (ListDocs l)
 		} while (p != NULL);
 }
 
-void SwapDoc (Node *p , Node *q)
+Node* GetPrev (ListDocs l,Node *p)
 {
-	Node *t;
-	/*(t->doc).Index = (p->doc).Index;
-	(t->doc).Name = (p->doc).Name;
-	(t->doc).Amount = (p->doc).Amount;
+	Node *q = new Node;
+	Node *r = new Node;
+	// Can't Use q->pNext != p;
+	for ( q = l.pHead ; q != p ;q = q->pNext)
+		 r = q;
+		return r ;
+}
 
-	(p->doc).Index = (q->doc).Index;
-	(p->doc).Name = (q->doc).Name;
-	(p->doc).Amount = (q->doc).Amount;
+void SwapDoc (ListDocs &l, Node *p , Node *q)
+{
+	// swap pPrev node
+	Node *t = new Node;
+	Node *r = new Node;
+	t = GetPrev(l,p);
+	r = GetPrev(l,q);
+	t->pNext = q;
+	r->pNext = p;
+	// swap pNext node
+	t = p->pNext;
+	p->pNext = q->pNext;
+	q->pNext = t;
 
-	(q->doc).Index = (t->doc).Index;
-	(q->doc).Name = (t->doc).Name;
-	(q->doc).Amount = (t->doc).Amount;*/
-	t = q;
-	t->pNext = q->pNext;
-	q = p;
-	q->pNext = p->pNext;
-	p = t;
-	p->pNext = t->pNext;
+	if ( p == l.pHead)
+		l.pHead = q;
+	else if (q == l.pHead)
+		l.pHead = p;
+	if ( p == l.pTail)
+	{
+		l.pTail = q;
+		l.pTail->pNext = NULL;
+	}
+	else if ( q == l.pTail)
+	{
+		l.pTail = p;
+		l.pTail->pNext = NULL;
+	}
 
 }
 
@@ -147,7 +165,9 @@ void SortList (ListDocs &l)
 		for ( q = p->pNext ; q != NULL ; q = q->pNext)
 			if ((q->doc).Amount < (p->doc).Amount)
 			{
-				SwapDoc(p,q);
+				cout<<(q->doc).Amount<<" "<<(p->doc).Amount<<endl;
+				SwapDoc(l,p,q);
+				p = q;
 			}
 }
 

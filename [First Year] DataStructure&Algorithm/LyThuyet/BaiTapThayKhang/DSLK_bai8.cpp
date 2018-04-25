@@ -10,17 +10,35 @@ struct Node
 	struct Node *pPrev;
 };
 
-
 struct List
 {
-	Node *pHEAD;
+	Node *pHead;
 	Node *pTail;
 };
 //typedef struct List List;
+void Init(List &l);
+Node* GetNode(int x);
+void ADDHead(List &l, Node *p);
+void Input (List &L);
+void Output(List l);
+void DeleteNode (List &l , Node *p);
+Node* GetDuplicate (List l , Node* p);
+void DeleteDuplicate(List &l);
+
+int main()
+{
+	List l;
+	Input(l);
+	Output(l);
+	DeleteDuplicate(l);
+	Output(l);
+	system("pause");
+	return 0;
+}
 
 void Init(List &l)
 {
-	l.pHEAD = NULL;
+	l.pHead = NULL;
 	l.pTail = NULL;
 }
 
@@ -35,15 +53,15 @@ Node* GetNode(int x)
 	return p;
 }
 
-void ADDHEAD(List &l, Node *p)
+void ADDHead(List &l, Node *p)
 {
-	if (l.pHEAD == NULL)
-		l.pHEAD = l.pTail = p;
+	if (l.pHead == NULL)
+		l.pHead = l.pTail = p;
 	else
 	{
-		p->pNext = l.pHEAD;
-		l.pHEAD->pPrev = p;
-		l.pHEAD = p;
+		p->pNext = l.pHead;
+		l.pHead->pPrev = p;
+		l.pHead = p;
 	}
 }
 
@@ -61,13 +79,13 @@ void Input (List &L)
 	   cin>>data;
 	   p = GetNode(data);
 	   if (p != NULL && data > -1)
-	   	  ADDHEAD(L,p);
+	   	  ADDHead(L,p);
 	}while (data > -1);
 }
 
 void Output(List l)
 {
-	Node *p = l.pHEAD;
+	Node *p = l.pHead;
 	while (p != NULL)
 	{
 		cout << p->info << " ";
@@ -109,26 +127,15 @@ void DeleteDuplicate(List &l)
 {
 	Node *p = new Node;
 	Node *q = new Node;
-	for ( p = l.pHEAD ; p != NULL ;)
+	for ( p = l.pHead ; p != NULL ;)
 	{
 		q = GetDuplicate(l,p);
 		if ( q != NULL)
 		{
 			DeleteNode(l,q);
-			p = l.pHEAD;
+			p = l.pHead;
 		}
 		else
 			p = p->pNext;
 	}
-}
-
-int main()
-{
-	List l;
-	Input(l);
-	Output(l);
-	DeleteDuplicate(l);
-	Output(l);
-	system("pause");
-	return 0;
 }
