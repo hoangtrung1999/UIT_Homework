@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-#define MaxNS 1
+#define MaxNS 2
 
 struct NS
 {
@@ -22,6 +22,27 @@ struct List
 	Node *pHead;
 	Node *pTail;
 };
+
+void Init (List &l);
+void AddTail (List &l , Node *p);
+Node* GetNode ();
+void Input (List &l);
+void PrintList (List l);
+Node* GetPrev (List l,Node *p);
+void SwapNS (List &l, Node *p , Node *q);
+void SortList (List &l);
+float AvgSalary (List l);
+
+int main()
+{
+	List l;
+	Input(l);
+	SortList(l);
+	PrintList(l);
+	cout<<"Luong trung binh cua nhan vien la: "<<AvgSalary(l)<<endl;
+
+	return 0;
+}
 
 void Init (List &l)
 {
@@ -103,17 +124,69 @@ void PrintList (List l)
 	}
 }
 
-void SortNS (List &l)
+Node* GetPrev (List l,Node *p)
+{
+	Node *q = new Node;
+	Node *r = new Node;
+	// Can't Use q->pNext != p;
+	for ( q = l.pHead ; q != p ;q = q->pNext)
+		 r = q;
+		return r ;
+}
+
+void SwapNS (List &l, Node *p , Node *q)
+{
+	// swap pPrev node
+	Node *t = new Node;
+	Node *r = new Node;
+	t = GetPrev(l,p);
+	r = GetPrev(l,q);
+	t->pNext = q;
+	r->pNext = p;
+	// swap pNext node
+	t = p->pNext;
+	p->pNext = q->pNext;
+	q->pNext = t;
+	// Set head or tail
+	if ( p == l.pHead)
+		l.pHead = q;
+	else if (q == l.pHead)
+		l.pHead = p;
+	if ( p == l.pTail)
+	{
+		l.pTail = q;
+		l.pTail->pNext = NULL;
+	}
+	else if ( q == l.pTail)
+	{
+		l.pTail = p;
+		l.pTail->pNext = NULL;
+	}
+
+}
+
+void SortList (List &l)
 {
 	Node *p = new Node;
 	Node *q = new Node;
-	
+	for (p = l.pHead ; p->pNext != NULL ; p = p->pNext)
+		for ( q = p->pNext ; q != NULL ; q = q->pNext)
+			if ((q->info).thamnien > (p->info).thamnien)
+			{
+				SwapNS(l,p,q);
+				p = q;
+			}
 }
 
-int main()
+float AvgSalary (List l)
 {
-	List l;
-	Input(l);
-	PrintList(l);
-	return 0;
+	Node *p = l.pHead;
+	float Avg = 0;
+	do
+	{
+		Avg += (p->info).luongcoban * (p->info).hesoluong;
+		p = p->pNext;
+	}while (p!= NULL);
+	Avg /= MaxNS;
+	return Avg;
 }
