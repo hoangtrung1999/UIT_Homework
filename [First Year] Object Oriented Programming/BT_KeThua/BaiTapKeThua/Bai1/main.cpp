@@ -6,7 +6,8 @@ using namespace std;
 
 int main()
 {
-	Employee* People; 
+	Employee** People;
+	People = new Employee*[2];
 	Officer employee1;
 	ProductionStaff employee2;
 
@@ -19,9 +20,9 @@ int main()
 	employee2.GetInfo();
 	
 	cout << "Infomation" << endl;
-	People = &employee1;
-	People->PrintInfo();
-	People = &employee2;
-	People->PrintInfo();
+	People[0] = &employee1;
+	People[0]->PrintInfo();
+	People[1] = &employee2;
+	People[1]->PrintInfo();
 	return 0;
 }

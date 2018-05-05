@@ -92,6 +92,7 @@ Node* GetNode ()
 	(p->info).hesoluong = hesoluong;
 	(p->info).luongcoban = luongcoban;
 	p->pNext = NULL;
+	delete[] hoten;
 	return p;
 }
 
@@ -137,8 +138,8 @@ Node* GetPrev (List l,Node *p)
 void SwapNS (List &l, Node *p , Node *q)
 {
 	// swap pPrev node
-	Node *t = new Node;
-	Node *r = new Node;
+	Node *t;
+	Node *r;
 	t = GetPrev(l,p);
 	r = GetPrev(l,q);
 	t->pNext = q;
