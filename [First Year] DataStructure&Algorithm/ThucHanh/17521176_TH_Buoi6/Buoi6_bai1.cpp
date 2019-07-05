@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 using namespace std;
 struct Node
 {
@@ -12,7 +13,7 @@ void Init ( Tree &t);
 bool IsEmpty (Tree t);
 Node* GetNode (int x);
 int InsertNode (Tree &t , int x );
-void Input (Tree &t);
+void Input (Tree &t, ifstream& File);
 void PrintLNR (Tree t);
 void PrintLRN (Tree t);
 void PrintNLR (Tree t);
@@ -24,16 +25,16 @@ void DeleteNode (Tree &t);
 void CountNode (Tree t, int &count);
 void CountLeafs (Tree t, int &count);
 void CountFullNodes (Tree t, int &count);
-void CountHeight (Tree t , int &count);
-
+int CountHeight (Tree &t);
+Node* FindPrev (Tree &t , int x, int &flag);
 int main()
 {
 	Tree t;
-	int x;
-	Node* p;
 	int count = 0;
-	Input(t);
-
+	ifstream File;
+	File.open("Text.txt");
+	Input(t,File);
+	File.close();
 	cout<<"LNR: ";
 	PrintLNR(t);
 	cout<<endl;
@@ -58,10 +59,6 @@ int main()
 	PrintNLR(t);
 	cout<<endl;
 
-	cout<<"Nhap X can tim: "<<endl;
-	cin>>x;
-	p = SearchNode(t,x);
-
 	CountNode(t,count);
 	cout<<"So nut trong cay: "<<count<<endl;
 	
@@ -73,7 +70,11 @@ int main()
 	CountFullNodes(t,count);
 	cout<<"So nut co day du 2 con la: "<<count<<endl;
 
-	return 0;
+	/*DeleteNode(t);
+	PrintLNR(t);
+
+	cout<<"Chieu cao cua cay: "<<CountHeight(t)<<endl;
+	return 0;*/
 }
 
 void Init ( Tree &t)
@@ -114,17 +115,15 @@ int InsertNode (Tree &t , int x )
 	return 1;
 }
 
-void Input (Tree &t)
+void Input (Tree &t, ifstream& File)
 {
 	int n;
-	cout<<"Nhap n: "<<endl;
-	cin>>n;
+	File>>n;
 	Init(t);
 	for (int i = 0 ; i < n ; i++)
 	{
 		int x;
-		cout<<"Nhap Node: ";
-		cin>>x;
+		File>>x;
 		InsertNode(t,x);
 	}
 }
@@ -171,7 +170,6 @@ void PrintNRL (Tree t)
 
 void PrintRNL (Tree t)
 {
-
 	if (t == NULL)
 		return;
 	PrintRNL(t->pRight);
@@ -181,11 +179,10 @@ void PrintRNL (Tree t)
 
 void PrintRLN (Tree t)
 {
-
 	if (t == NULL)
 		return;
-	PrintRNL(t->pRight);
-	PrintRNL(t->pLeft);
+	PrintRLN(t->pRight);
+	PrintRLN(t->pLeft);
 	cout<<t->data<<" ";
 }
 
@@ -210,22 +207,79 @@ Node* SearchNode (Tree t, int x)
 	return NULL;
 }
 
-void DeleteNode (Tree &t)
+Node* FindPrev (Tree &t , int x, int &flag)
+{
+	if (t == NULL)
+		return NULL;
+	else if (t->pRight && t->pRight->data == x)
+	{
+		flag = 1;
+		return t;
+	}
+	else if (t->pLeft && t->pLeft->data == x)
+	{
+		flag = 0;
+		return t;
+	}
+	if (t->data > x)
+		FindPrev(t->pLeft,x,flag);
+	else
+		FindPrev(t->pRight,x,flag);
+}
+
+/*void DeleteNode (Tree &t)
 {
 	int x;
 	Node *p;
-	cout<<"Nhap X can tim: "<<endl;
+	Node *Prev;
+	cout<<"Nhap X can xoa: "<<endl;
 	cin>>x;
+	int flag; // 0 = left && 1 = right
 	p = SearchNode(t,x);
 	if (p)
 	{
+		if (p->pLeft == NULL && p->pRight == NULL) // Leaf Node
+		{
+			Prev = FindPrev(t,x,flag);
+			if (flag == 0 && Prev)
+			{
+				Prev->pLeft = NULL;
+				delete p;
+			}
+			else if (flag == 1 && Prev)
+			{
+				Prev->pRight = NULL;
+				delete p;
+			}
+		}
+		else if ( p->pLeft == NULL || p->pRight == NULL) // Node with one child
+		{
+			Prev = FindPrev(t,x,flag);
+			if (p->pRight)
+			{
+				Node* temp = p- >pRight;
+				Prev->pRight = temp;
+				p->pRight = NULL;
+				delete p;
+			}
+			else
+			{
+				Node* temp = p->pLeft;
+				Prev->pLeft = temp;
+				p->pLeft = NULL;
+				delete p;
+			}
+		}
+		else
+		{
 
+		}
 	}
 	else
 	{
 		cout<<"X not found";
 	}
-}
+}*/
 
 void CountNode (Tree t, int &count)
 {
@@ -256,6 +310,20 @@ void CountFullNodes (Tree t, int &count)
 	CountFullNodes (t->pRight,count);
 }
 
-void CountHeight (Tree t , int &count)
+int CountHeight (Tree &t)
 {
+	int Max;
+	if (t == NULL)
+		return 0;
+	else
+	{
+		cout<<t->data<<endl;
+		int l = CountHeight (t->pLeft);
+		int r = CountHeight (t->pRight);
+		cout<<l<<" "<<r<<endl;
+		//cout<<t->pLeft->data<<" "<<t->pRight->data<<endl;
+		//cout<<"l: "<<l<<" & "<<"r: "<<r<<endl;
+		Max = max(l,r) + 1;
+		return Max;
+	}
 }
