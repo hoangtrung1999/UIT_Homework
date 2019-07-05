@@ -1,0 +1,4 @@
+Ý Tưởng Thuật Toán:
++ Chạy code từ file CalFreq để tính toán tần số xuất hiện của các từ trong văn bản, sau đó lưu ở file Freq.txt
++ Dùng dữ liệu từ file Freq.txt, chạy code từ file HuffmanTree.cpp và in ra file PreCode.txt
++ Dùng dữ liệu từ file PreCode.txt, chạy code từ file Encode.cpp để nén dữ liệu và ghi ra file Compress.bin
